@@ -1,0 +1,46 @@
+﻿using ClosedXML.Excel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace MoneySummary
+{
+    public class Transaction
+    {
+        public DateTime Date { get; set; }
+        public string Description { get; set; }
+        public Category Category { get; set; }
+        public decimal Amount { get; set; }
+        public string Type { get; set; }
+
+        public Transaction(IXLRow row)
+        {
+            Date = row.Cell((int)ExcelTemplate.Date).GetDateTime();
+            Amount = row.Cell((int)ExcelTemplate.Amount).GetValue<decimal>();
+            Description = row.Cell((int)ExcelTemplate.Description).GetValue<string>();
+            Type = row.Cell((int)ExcelTemplate.Type).GetValue<string>();
+            Category = GetCategory();
+        }
+
+        private Category GetCategory()
+        {
+            foreach (CategoryKeys c in Controller.GetInstance().CategoryKeyList)
+            {
+                if(c.Keys.FirstOrDefault<string>(s => Type.ToLower().Contains(s.ToLower())) != null){
+                    return c.Category;
+                }
+                if (c.Keys.FirstOrDefault<string>(s => Description.ToLower().Contains(s.ToLower())) != null)
+                {
+                    return c.Category;
+                }
+
+            }
+
+            return Category.INNE;
+
+        }
+    }
+}
