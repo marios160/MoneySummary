@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +19,7 @@ namespace MoneySummary
         public List<CategorySummary> CategorySummaryList { get; set; }
 
         public BindingSource CategorySummaryListBinding { get; set; }
+        public BindingSource CategoryPositionListBinding { get; set; }
 
 
         public static Controller GetInstance()
@@ -34,45 +36,68 @@ namespace MoneySummary
         }
         public Controller()
         {
-            TransactionList = new List<Transaction>();
             CategoryKeyList = CategoryKeys.InitKeys();
-            CategorySummaryListBinding = new BindingSource();
-
+            Clear();
 
         }
 
-        internal void Calculate()
+        internal decimal Calculate()
         {
-            XLWorkbook book = new XLWorkbook(FilePath);
-            IXLWorksheet workSheet = book.Worksheet(1);
-
-
-
-            bool firstRow = true;
-            foreach (IXLRow item in workSheet.Rows())
+            Clear();
+            try
             {
-                if (firstRow)
+
+                XLWorkbook book = new XLWorkbook(FilePath);
+                IXLWorksheet workSheet = book.Worksheet(1);
+
+
+
+                bool firstRow = true;
+                foreach (IXLRow item in workSheet.Rows())
                 {
-                    firstRow = false;
-                    continue;
+                    if (firstRow)
+                    {
+                        firstRow = false;
+                        continue;
+                    }
+
+                    TransactionList.Add(new(item));
                 }
 
-                TransactionList.Add(new(item));
-            }
+                CategorySummaryList = new List<CategorySummary>();
 
-            CategorySummaryList = new List<CategorySummary>();
-
-            foreach (CategoryKeys c in CategoryKeyList)
-            {
-                CategorySummaryList.Add(new CategorySummary
+                foreach (CategoryKeys c in CategoryKeyList)
                 {
-                    Category = c.Category.ToString(),
-                    Amount = TransactionList.Where(t => t.Category == c.Category).Select(t => t.Amount).Sum()
-                });
+                    CategorySummaryList.Add(new CategorySummary
+                    {
+                        Category = c.Category.ToString(),
+                        Amount = TransactionList.Where(t => t.Category == c.Category).Select(t => t.Amount).Sum()
+                    });
+                }
+
+                CategorySummaryListBinding.DataSource = CategorySummaryList;
+
+                return CategorySummaryList.Sum(x => x.Amount);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            CategorySummaryListBinding.DataSource = CategorySummaryList;
+            return 0;
+        }
 
+        private void Clear()
+        {
+            TransactionList = new List<Transaction>();
+            CategorySummaryListBinding = new BindingSource();
+            CategoryPositionListBinding = new BindingSource();
+        }
+
+        internal void GetPositions(string category)
+        {
+            CategoryPositionListBinding.DataSource = TransactionList.Where(t => t.Category.ToString().Equals(category));
         }
     }
 }

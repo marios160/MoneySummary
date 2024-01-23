@@ -1,3 +1,4 @@
+using System.Data;
 using System.Runtime.ConstrainedExecution;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -9,7 +10,6 @@ namespace MoneySummary
         public Form1()
         {
             InitializeComponent();
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -17,14 +17,31 @@ namespace MoneySummary
             OpenFileDialog dialog = new();
             DialogResult result = dialog.ShowDialog();
             ctr.FilePath = dialog.FileName;
-            ctr.Calculate();
+            lbl_sum.Text = ctr.Calculate().ToString();
+            Refresh();
+             
+        }
 
+        private void Refresh()
+        {
+            dgv_summary.DataSource = ctr.CategorySummaryListBinding;
+            dgv_positions.DataSource = ctr.CategoryPositionListBinding;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //dgv_Summary.AutoGenerateColumns = false;
-            //dgv_Summary.DataSource = ctr.CategorySummaryListBinding;
+            dgv_summary.AutoGenerateColumns = false;
+            dgv_positions.AutoGenerateColumns = false;
+            dgv_summary.DataSource = ctr.CategorySummaryListBinding;
+            dgv_positions.DataSource = ctr.CategoryPositionListBinding;
+        }
+
+        private void dgv_summary_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgv_summary.SelectedRows.Count > 0)
+            {
+                ctr.GetPositions(dgv_summary.CurrentRow.Cells["category"].Value.ToString());
+            }
         }
     }
 }

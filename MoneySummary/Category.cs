@@ -28,6 +28,8 @@ namespace MoneySummary
         DOM = 17,
         PRZYJEMNOSCI = 18,
         ZABAWKI = 19,
+        BANKOMAT = 20,
+        LOKATY = 21,
 
 
     }

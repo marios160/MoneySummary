@@ -11,6 +11,7 @@ namespace MoneySummary
         Date = 1,
         Type = 3,
         Amount = 4,
+        Recipient = 11,
         Description = 13
 
     }
