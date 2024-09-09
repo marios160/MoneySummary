@@ -30,7 +30,8 @@ namespace MoneySummary
         ZABAWKI = 19,
         BANKOMAT = 20,
         LOKATY = 21,
-
-
+        PRZELEW_WEW = 22,
+        ROZWOJ = 23,
+        DZIALALNOSC = 24,
     }
 }

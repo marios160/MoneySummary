@@ -15,10 +15,16 @@ namespace MoneySummary
         private void button1_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new();
+            dialog.Multiselect = true;
             DialogResult result = dialog.ShowDialog();
-            ctr.FilePath = dialog.FileName;
-            lbl_sum.Text = ctr.Calculate().ToString();
+            ctr.Clear();
+            foreach (string s in dialog.FileNames)
+            {
+                ctr.FilePath = s;
+                ctr.Calculate();
+            }
             Refresh();
+            lbl_sum.Text = ctr.Sum.ToString();
              
         }
 

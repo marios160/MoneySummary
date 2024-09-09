@@ -12,7 +12,10 @@ namespace MoneySummary
         Type = 3,
         Amount = 4,
         Recipient = 11,
-        Description = 13
+        Description1 = 13,
+        Description2 = 14,
+        Description3 = 15,
+
 
     }
 }

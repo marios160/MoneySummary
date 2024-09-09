@@ -21,6 +21,8 @@ namespace MoneySummary
         public BindingSource CategorySummaryListBinding { get; set; }
         public BindingSource CategoryPositionListBinding { get; set; }
 
+        public decimal Sum { get; set; }
+
 
         public static Controller GetInstance()
         {
@@ -41,9 +43,9 @@ namespace MoneySummary
 
         }
 
-        internal decimal Calculate()
+        internal void Calculate()
         {
-            Clear();
+            //Clear();
             try
             {
 
@@ -77,7 +79,7 @@ namespace MoneySummary
 
                 CategorySummaryListBinding.DataSource = CategorySummaryList;
 
-                return CategorySummaryList.Sum(x => x.Amount);
+                Sum = CategorySummaryList.Where(x => x.Category != Category.PRZELEW_WEW.ToString()).Sum(x => x.Amount);
 
             }
             catch (Exception ex)
@@ -85,14 +87,14 @@ namespace MoneySummary
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            return 0;
         }
 
-        private void Clear()
+        public void Clear()
         {
             TransactionList = new List<Transaction>();
             CategorySummaryListBinding = new BindingSource();
             CategoryPositionListBinding = new BindingSource();
+            Sum = 0;
         }
 
         internal void GetPositions(string category)
