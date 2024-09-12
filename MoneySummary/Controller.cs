@@ -62,8 +62,8 @@ namespace MoneySummary
                         firstRow = false;
                         continue;
                     }
-
-                    TransactionList.Add(new(item));
+                    if(!item.IsEmpty())
+                        TransactionList.Add(new(item));
                 }
 
                 CategorySummaryList = new List<CategorySummary>();
