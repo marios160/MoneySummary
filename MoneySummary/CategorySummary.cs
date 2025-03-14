@@ -9,6 +9,6 @@ namespace MoneySummary
     public class CategorySummary
     {
         public string Category { get; set; }
-        public decimal Amount { get; set; }
+        public Dictionary<DateTime, decimal> Amounts { get; set; }
     }
 }

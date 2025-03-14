@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -70,17 +72,21 @@ namespace MoneySummary
 
                 foreach (CategoryKeys c in CategoryKeyList)
                 {
+                    var monthlySummary = TransactionList
+                       .Where(t => t.Category == c.Category)  // Filtruj transakcje po kategorii
+                       .GroupBy(t => new DateTime(t.Date.Year, t.Date.Month, 1)) // Grupowanie po miesiącu
+                       .ToDictionary(g => g.Key, g => g.Sum(t => t.Amount));  // Tworzenie słownika {Miesiąc -> Suma}
+
                     CategorySummaryList.Add(new CategorySummary
                     {
                         Category = c.Category.ToString(),
-                        Amount = TransactionList.Where(t => t.Category == c.Category).Select(t => t.Amount).Sum()
+                        Amounts = monthlySummary
                     });
                 }
 
                 CategorySummaryListBinding.DataSource = CategorySummaryList;
 
-                Sum = CategorySummaryList.Where(x => x.Category != Category.PRZELEW_WEW.ToString()).Sum(x => x.Amount);
-
+                Sum = CategorySummaryList.Where(x => x.Category != Category.PRZELEW_WEW.ToString()).Sum(x => x.Amounts.Sum(c => c.Value));
             }
             catch (Exception ex)
             {
@@ -89,9 +95,46 @@ namespace MoneySummary
 
         }
 
-        public void Clear()
+        internal void Recalculate()
         {
-            TransactionList = new List<Transaction>();
+            CategoryKeyList = CategoryKeys.InitKeys();
+            Clear(true);
+            try
+            {
+                foreach (Transaction t in TransactionList)
+                    t.Category = t.GetCategory();
+
+                CategorySummaryList = new List<CategorySummary>();
+
+                foreach (CategoryKeys c in CategoryKeyList)
+                {
+
+                    var monthlySummary = TransactionList
+                       .Where(t => t.Category == c.Category)  // Filtruj transakcje po kategorii
+                       .GroupBy(t => new DateTime(t.Date.Year, t.Date.Month, 1)) // Grupowanie po miesiącu
+                       .ToDictionary(g => g.Key, g => g.Sum(t => t.Amount));  // Tworzenie słownika {Miesiąc -> Suma}
+
+                    CategorySummaryList.Add(new CategorySummary
+                    {
+                        Category = c.Category.ToString(),
+                        Amounts = monthlySummary
+                    });
+                }
+
+                CategorySummaryListBinding.DataSource = CategorySummaryList;
+
+                Sum = CategorySummaryList.Where(x => x.Category != Category.PRZELEW_WEW.ToString()).Sum(x => x.Amounts.Sum(c => c.Value));
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+}
+
+        public void Clear(bool recalculate = false)
+        {
+            if(!recalculate) TransactionList = new List<Transaction>();
             CategorySummaryListBinding = new BindingSource();
             CategoryPositionListBinding = new BindingSource();
             Sum = 0;
@@ -99,7 +142,7 @@ namespace MoneySummary
 
         internal void GetPositions(string category)
         {
-            CategoryPositionListBinding.DataSource = TransactionList.Where(t => t.Category.ToString().Equals(category));
+            CategoryPositionListBinding.DataSource = TransactionList.Where(t => t.Category.ToString().Equals(category)).OrderByDescending(o => o.Date);
         }
     }
 }

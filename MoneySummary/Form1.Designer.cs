@@ -30,6 +30,7 @@
         {
             button1 = new Button();
             panel1 = new Panel();
+            btn_reloadKeys = new Button();
             lbl_sum = new Label();
             label1 = new Label();
             panel2 = new Panel();
@@ -64,6 +65,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(btn_reloadKeys);
             panel1.Controls.Add(lbl_sum);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(button1);
@@ -73,10 +75,20 @@
             panel1.Size = new Size(1240, 52);
             panel1.TabIndex = 2;
             // 
+            // btn_reloadKeys
+            // 
+            btn_reloadKeys.Location = new Point(130, 12);
+            btn_reloadKeys.Name = "btn_reloadKeys";
+            btn_reloadKeys.Size = new Size(112, 32);
+            btn_reloadKeys.TabIndex = 3;
+            btn_reloadKeys.Text = "Przeładuj";
+            btn_reloadKeys.UseVisualStyleBackColor = true;
+            btn_reloadKeys.Click += btn_reloadKeys_Click;
+            // 
             // lbl_sum
             // 
             lbl_sum.AutoSize = true;
-            lbl_sum.Location = new Point(176, 21);
+            lbl_sum.Location = new Point(306, 21);
             lbl_sum.Name = "lbl_sum";
             lbl_sum.Size = new Size(13, 15);
             lbl_sum.TabIndex = 2;
@@ -85,7 +97,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(130, 21);
+            label1.Location = new Point(260, 21);
             label1.Name = "label1";
             label1.Size = new Size(40, 15);
             label1.TabIndex = 1;
@@ -243,6 +255,7 @@
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private DataGridViewTextBoxColumn category;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private Button btn_reloadKeys;
         private DataGridViewTextBoxColumn date;
         private DataGridViewTextBoxColumn amount;
         private DataGridViewTextBoxColumn type;

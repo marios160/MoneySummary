@@ -37,7 +37,7 @@ namespace MoneySummary
             Category = GetCategory();
         }
 
-        private Category GetCategory()
+        public Category GetCategory()
         {
             foreach (CategoryKeys c in Controller.GetInstance().CategoryKeyList)
             {

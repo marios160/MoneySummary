@@ -33,5 +33,6 @@ namespace MoneySummary
         PRZELEW_WEW = 22,
         ROZWOJ = 23,
         DZIALALNOSC = 24,
+        DRUK3D = 25,
     }
 }
