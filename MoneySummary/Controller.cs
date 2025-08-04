@@ -1,5 +1,4 @@
-﻿using ClosedXML.Excel;
-using ExcelDataReader;
+﻿using ExcelDataReader;
 
 namespace MoneySummary
 {
@@ -43,24 +42,7 @@ namespace MoneySummary
             try
             {
 
-                //XLWorkbook book = new XLWorkbook(FilePath);
-                //IXLWorksheet workSheet = book.Worksheet(1);
-
-
-
-                //bool firstRow = true;
-                //foreach (IXLRow item in workSheet.Rows())
-                //{
-                //    if (firstRow)
-                //    {
-                //        firstRow = false;
-                //        continue;
-                //    }
-                //    if(!item.IsEmpty())
-                //        TransactionList.Add(new(item));
-                //}
-
-                TransactionList = ReadExcelFile(FilePath);
+                TransactionList.AddRange(ReadExcelFile(FilePath));
 
                 CategorySummaryList = new List<CategorySummary>();
 
@@ -108,7 +90,7 @@ namespace MoneySummary
                 if (row.ItemArray.Length < 10) continue;
 
                 transactions.Add(new(row));
-                
+
             }
 
             return transactions;
@@ -149,11 +131,11 @@ namespace MoneySummary
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-}
+        }
 
         public void Clear(bool recalculate = false)
         {
-            if(!recalculate) TransactionList = new List<Transaction>();
+            if (!recalculate) TransactionList = new List<Transaction>();
             CategorySummaryListBinding = new BindingSource();
             CategoryPositionListBinding = new BindingSource();
             Sum = 0;

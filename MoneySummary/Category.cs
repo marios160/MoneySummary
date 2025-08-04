@@ -34,5 +34,6 @@ namespace MoneySummary
         ROZWOJ = 23,
         DZIALALNOSC = 24,
         DRUK3D = 25,
+        WYPIEKI = 26,
     }
 }

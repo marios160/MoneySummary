@@ -8,13 +8,13 @@ namespace MoneySummary
 {
     enum ExcelTemplate
     {
-        Date = 1,
-        Type = 3,
-        Amount = 4,
-        Recipient = 11,
-        Description1 = 13,
-        Description2 = 14,
-        Description3 = 15,
+        Date = 0,
+        Type = 2,
+        Amount = 3,
+        Recipient = 10,
+        Description1 = 12,
+        Description2 = 13,
+        Description3 = 14,
 
 
     }

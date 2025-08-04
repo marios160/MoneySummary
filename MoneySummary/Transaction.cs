@@ -15,37 +15,20 @@ namespace MoneySummary
         public string Type { get; set; }
         public string Recipient { get; set; }
 
-        public Transaction(IXLRow row)
-        {
-            Date = DateTime.Parse(row.Cell((int)ExcelTemplate.Date).GetValue<string>());
-            Amount = row.Cell((int)ExcelTemplate.Amount).GetValue<decimal>();
-            Description1 = row.Cell((int)ExcelTemplate.Description1).GetValue<string>();
-            string desc = row.Cell((int)ExcelTemplate.Description2).GetValue<string>();
-            if (desc.IndexOf("Adres :") > 0)
-                Description2 = desc[(desc.IndexOf("Adres :") + 7)..];
-            else
-                Description2 = desc;
-            Description3 = row.Cell((int)ExcelTemplate.Description3).GetValue<string>();
-            Description = $"{Description1} {Description2} {Description3}";
-            Type = row.Cell((int)ExcelTemplate.Type).GetValue<string>();
-            Recipient = row.Cell((int)ExcelTemplate.Recipient).GetValue<string>();
-            Category = GetCategory();
-        }
-
         public Transaction(DataRow row)
         {
-            Date = DateTime.Parse(row[(int)ExcelTemplate.Date - 1].ToString());
-            Amount = decimal.Parse(row[(int)ExcelTemplate.Amount - 1].ToString());
-            Description1 = row[(int)ExcelTemplate.Description1 - 1].ToString();
-            string desc = row[(int)ExcelTemplate.Description2 - 1].ToString();
+            Date = DateTime.Parse(row[(int)ExcelTemplate.Date].ToString());
+            Amount = decimal.Parse(row[(int)ExcelTemplate.Amount].ToString());
+            Description1 = row[(int)ExcelTemplate.Description1].ToString();
+            string desc = row[(int)ExcelTemplate.Description2].ToString();
             if (desc.IndexOf("Adres :") > 0)
                 Description2 = desc[(desc.IndexOf("Adres :") + 7)..];
             else
                 Description2 = desc;
-            Description3 = row[(int)ExcelTemplate.Description3 - 1].ToString();
+            Description3 = row[(int)ExcelTemplate.Description3].ToString();
             Description = $"{Description1} {Description2} {Description3}";
-            Type = row[(int)ExcelTemplate.Type - 1].ToString();
-            Recipient = row[(int)ExcelTemplate.Recipient - 1].ToString();
+            Type = row[(int)ExcelTemplate.Type].ToString();
+            Recipient = row[(int)ExcelTemplate.Recipient].ToString();
             Category = GetCategory();
         }
 
