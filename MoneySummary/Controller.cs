@@ -1,13 +1,5 @@
 ﻿using ClosedXML.Excel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using ExcelDataReader;
 
 namespace MoneySummary
 {
@@ -51,22 +43,24 @@ namespace MoneySummary
             try
             {
 
-                XLWorkbook book = new XLWorkbook(FilePath);
-                IXLWorksheet workSheet = book.Worksheet(1);
+                //XLWorkbook book = new XLWorkbook(FilePath);
+                //IXLWorksheet workSheet = book.Worksheet(1);
 
 
 
-                bool firstRow = true;
-                foreach (IXLRow item in workSheet.Rows())
-                {
-                    if (firstRow)
-                    {
-                        firstRow = false;
-                        continue;
-                    }
-                    if(!item.IsEmpty())
-                        TransactionList.Add(new(item));
-                }
+                //bool firstRow = true;
+                //foreach (IXLRow item in workSheet.Rows())
+                //{
+                //    if (firstRow)
+                //    {
+                //        firstRow = false;
+                //        continue;
+                //    }
+                //    if(!item.IsEmpty())
+                //        TransactionList.Add(new(item));
+                //}
+
+                TransactionList = ReadExcelFile(FilePath);
 
                 CategorySummaryList = new List<CategorySummary>();
 
@@ -93,6 +87,31 @@ namespace MoneySummary
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+        }
+
+        static List<Transaction> ReadExcelFile(string filePath)
+        {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            var transactions = new List<Transaction>();
+
+            using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read);
+            using var reader = ExcelReaderFactory.CreateReader(stream);
+
+            var dataSet = reader.AsDataSet();
+            var table = dataSet.Tables[0]; // pierwsza zakładka Excela
+
+            for (int i = 1; i < table.Rows.Count; i++) // pomiń nagłówek
+            {
+                var row = table.Rows[i];
+
+                if (row.ItemArray.Length < 10) continue;
+
+                transactions.Add(new(row));
+                
+            }
+
+            return transactions;
         }
 
         internal void Recalculate()

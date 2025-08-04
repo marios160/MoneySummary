@@ -1,10 +1,5 @@
 ﻿using ClosedXML.Excel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Data;
 
 namespace MoneySummary
 {
@@ -34,6 +29,23 @@ namespace MoneySummary
             Description = $"{Description1} {Description2} {Description3}";
             Type = row.Cell((int)ExcelTemplate.Type).GetValue<string>();
             Recipient = row.Cell((int)ExcelTemplate.Recipient).GetValue<string>();
+            Category = GetCategory();
+        }
+
+        public Transaction(DataRow row)
+        {
+            Date = DateTime.Parse(row[(int)ExcelTemplate.Date - 1].ToString());
+            Amount = decimal.Parse(row[(int)ExcelTemplate.Amount - 1].ToString());
+            Description1 = row[(int)ExcelTemplate.Description1 - 1].ToString();
+            string desc = row[(int)ExcelTemplate.Description2 - 1].ToString();
+            if (desc.IndexOf("Adres :") > 0)
+                Description2 = desc[(desc.IndexOf("Adres :") + 7)..];
+            else
+                Description2 = desc;
+            Description3 = row[(int)ExcelTemplate.Description3 - 1].ToString();
+            Description = $"{Description1} {Description2} {Description3}";
+            Type = row[(int)ExcelTemplate.Type - 1].ToString();
+            Recipient = row[(int)ExcelTemplate.Recipient - 1].ToString();
             Category = GetCategory();
         }
 
